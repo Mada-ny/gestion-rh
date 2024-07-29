@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::get('/demande-absences', [DemandeAbsenceController::class, 'index'])->name('demande-absences.index');
+    Route::post('/demande-absences', [DemandeAbsenceController::class, 'store'])->name('demande-absences.store');
+    Route::get('/demande-absences/create', [DemandeAbsenceController::class, 'create'])->name('demande-absences.create');
 
     // Routes Employés
     Route::middleware(['role:employe,drh,directeur'])->group(function () {

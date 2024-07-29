@@ -14,6 +14,7 @@
                 @auth
                     <a href="{{ route('dashboard') }}" class="mr-4">Dashboard</a>
                     <a href="{{ route('profile') }}" class="mr-4">Profil</a>
+                    <a href="{{ route('demande-absences.index') }}" class="mr-4">Demandes d'absence</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="bg-red-500 px-4 py-2 rounded">Déconnexion</button>
