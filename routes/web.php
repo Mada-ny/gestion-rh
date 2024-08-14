@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::post('/absences/{absence}/approve', [AbsenceController::class, 'approve'])->name('absences.approve');
     Route::post('/absences/{absence}/reject', [AbsenceController::class, 'reject'])->name('absences.reject');
+    Route::post('employes/{employe}/restore', [EmployeController::class, 'restore'])->name('employes.restore');
 
     Route::get('/calendrier', [CongeController::class, 'calendar'])->name('conges.calendar');
 });

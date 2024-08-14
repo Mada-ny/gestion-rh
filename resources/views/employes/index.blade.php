@@ -1,23 +1,28 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Liste des employés') }}
-        </h2>
-    </x-slot>
+    <x-mary-header title="Liste des employés" class="font-serif font-semibold text-3xl max-w-7xl mx-auto mb-auto py-6 px-4 sm:px-6 lg:px-8 leading-tight text-primary" separator/>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    {{ session('success') }}
+            <div class="flex justify-center">
+                <div class="w-2/3 mb-4 ">
+                    <x-alert icon="o-check-circle" class="alert-success" dismissible>
+                        {{ session('success') }}
+                    </x-alert>
                 </div>
-            @endif
+            </div>
+        @endif
+        
+        @if(session('error'))
+            <div class="flex justify-center">
+                <div>
+                    <x-alert icon="o-x-circle" class="alert-error" dismissible>
+                        {{ session('error') }}
+                    </x-alert>
+                </div>
+            </div>
+        @endif
 
-            @if(session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    {{ session('error') }}
-                </div>
-            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @can('gérer employés')

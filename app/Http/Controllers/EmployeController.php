@@ -145,7 +145,7 @@ class EmployeController extends Controller
             'email' => $employe->email,
         ]);
 
-        return redirect()->route('employes.index')->with('success', 'Employé mis à jour avec succès.');
+        return back()->with('success', 'Employé mis à jour avec succès.');
     }
 
     /**
@@ -160,6 +160,18 @@ class EmployeController extends Controller
         // Désactivation du compte utilisateur associé
         $employe->user->update(['email' => $employe->user->email . '_inactif']);
 
-        return redirect()->route('employes.index')->with('success', 'Employé désactivé avec succès.');
+        return redirect()->route('employes.show', $employe)->with('success', 'Employé désactivé avec succès.');
+    }
+    
+    public function restore(Employe $employe)
+    {
+        // Mise à jour du statut de l'employé
+        $employe->update([
+            'statut' => 'actif'
+        ]);
+        // Réactivation du compte utilisateur associé
+        $employe->user->update(['email' => preg_replace('/_inactif$/', '', $employe->user->email)]);
+
+        return redirect()->route('employes.show', $employe)->with('success', 'Employé réactivé avec succès.');
     }
 }
