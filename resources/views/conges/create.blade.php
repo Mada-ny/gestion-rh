@@ -1,58 +1,44 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Nouvelle période de congés') }}
-        </h2>
-    </x-slot>
+    <x-mary-header title="Nouvelle période de congés" class="font-serif font-semibold text-3xl max-w-7xl mx-auto mb-auto py-6 px-4 sm:px-6 lg:px-8 leading-tight text-primary" separator>
+        <x-slot:actions>
+            <x-button label="Retour" icon="o-arrow-left" class="btn-outline btn-primary font-semibold" link="{{ route('conges.index') }}" />
+        </x-slot:actions>
+    </x-mary-header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('conges.store') }}" method="POST">
-                        @csrf
-                        <div class="grid grid-cols-1 gap-4">
-                            <div>
-                                <x-input-label for="employe_id" :value="__('Employé')" />
-                                <select id="employe_id" name="employe_id" class="mt-1 block w-3/6 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                                    <option value="" selected disabled>Choisir un employé</option>
-                                    @foreach ($employes as $employe)
-                                        <option value="{{ $employe->id }}">{{ $employe->nom }} {{ $employe->prénom }}</option>
-                                    @endforeach
-                                </select>
-                                <x-input-error class="mt-2" :messages="$errors->get('employe_id')" />
-                            </div>
-                            <div>
-                                <x-input-label for="date_debut" :value="__('Date de début')" />
-                                <x-text-input id="date_debut" name="date_debut" type="date" class="mt-1 block w-3/6" :value="old('date_debut')" required autofocus />
-                                <x-input-error class="mt-2" :messages="$errors->get('date_debut')" />
-                            </div>
-                            <div>
-                                <x-input-label for="date_fin" :value="__('Date de fin')" />
-                                <x-text-input id="date_fin" name="date_fin" type="date" class="mt-1 block w-3/6" :value="old('date_fin')" required autofocus />
-                                <x-input-error class="mt-2" :messages="$errors->get('date_fin')" />
-                            </div>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-40">
+        <form action="{{ route('conges.store') }}" method="POST">
+            <x-card class="p-6 shadow-lg">
+                @csrf
+                <div class="flex flex-col w-full gap-6">
+                    <div>
+                        <x-input-label for="employe_id" :value="__('Employé')" class="text-info" />
+                        <select id="employe_id" name="employe_id" class="mt-1 block w-full bg-base-300 border-info focus:bg-secondary focus:outline-none focus:border-primary focus:ring-primary rounded-md" required>
+                            <option value="" selected disabled>Choisir un employé</option>
+                            @foreach ($employes as $employe)
+                                <option value="{{ $employe->id }}">{{ $employe->nom }} {{ $employe->prénom }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error class="mt-2" :messages="$errors->get('employe_id')" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="date_debut" :value="__('Date de début')" class="text-info" />
+                            <x-text-input id="date_debut" name="date_debut" type="date" class="mt-1 block border-info w-full bg-base-300 focus:bg-secondary focus:ring-primary focus:border-primary" :value="old('date_debut')" required />
+                            <x-input-error class="mt-2" :messages="$errors->get('date_debut')" />
                         </div>
-                        <div class="flex items-center justify-start mt-4">
-                            <x-primary-button class="mt-4">
-                                {{ __('Ajouter la période') }}
-                            </x-primary-button>
+                        <div>
+                            <x-input-label for="date_fin" :value="__('Date de fin')" class="text-info" />
+                            <x-text-input id="date_fin" name="date_fin" type="date" class="mt-1 block border-info w-full bg-base-300 focus:bg-secondary focus:ring-primary focus:border-primary" :value="old('date_fin')" required />
+                            <x-input-error class="mt-2" :messages="$errors->get('date_fin')" />
                         </div>
-                    </form>
+                    </div>
                 </div>
+            </x-card>
+            
+            <div class="flex justify-center mt-8">
+                <x-conge-button>
+                </x-conge-button>
             </div>
-        </div>
+        </form>
     </div>
 </x-app-layout>

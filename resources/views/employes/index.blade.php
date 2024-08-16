@@ -1,47 +1,46 @@
 <x-app-layout>
-    <x-mary-header title="Liste des employés" class="font-serif font-semibold text-3xl max-w-7xl mx-auto mb-auto py-6 px-4 sm:px-6 lg:px-8 leading-tight text-primary" separator/>
+    <x-mary-header title="Liste des employés" class="font-serif font-semibold text-3xl max-w-7xl mx-auto mb-auto py-6 px-4 sm:px-6 lg:px-8 leading-tight text-primary" separator>
+        @can('gérer employés')
+            <x-slot:actions>
+                <x-mary-button label="Ajouter un employé" icon="o-plus-circle" class="btn-outline btn-primary font-semibold" link="{{ route('employes.create') }}"/>
+            </x-slot:actions>
+        @endcan
+    </x-mary-header>
 
-    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if(session('success'))
-            <div class="flex justify-center">
-                <div class="w-2/3 mb-4 ">
-                    <x-alert icon="o-check-circle" class="alert-success" dismissible>
-                        {{ session('success') }}
-                    </x-alert>
-                </div>
-            </div>
-        @endif
-        
-        @if(session('error'))
-            <div class="flex justify-center">
-                <div>
-                    <x-alert icon="o-x-circle" class="alert-error" dismissible>
-                        {{ session('error') }}
-                    </x-alert>
-                </div>
-            </div>
-        @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    @can('gérer employés')
-                    <div class="mb-10">
-                        <a href="{{ route('employes.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Ajouter un employé
-                        </a>
+                <div class="flex justify-center">
+                    <div class="w-2/3 mb-4 ">
+                        <x-alert icon="o-check-circle" class="alert-success" dismissible>
+                            {{ session('success') }}
+                        </x-alert>
                     </div>
-                    @endcan
+                </div>
+            @endif
+        
+            @if(session('error'))
+                <div class="flex justify-center">
+                    <div>
+                        <x-alert icon="o-x-circle" class="alert-error" dismissible>
+                            {{ session('error') }}
+                        </x-alert>
+                    </div>
+                </div>
+            @endif
 
+            <x-card class="p-6 shadow-lg">
+                <div>
+                    
                     <div class="mb-6">
                         <form action="{{ route('employes.index') }}" method="GET" class="flex items-center">
-                            <x-text-input id="search" name="search" type="text" class="mt-1 block w-full" :value="request()->input('search')" placeholder="Rechercher par nom ou prénom" />
-                        </form>
-                    </div>
-
+                            <x-text-input id="search" name="search" type="text" class="mt-1 block w-full bg-secondary focus:ring-primary focus:border-primary" :value="request()->input('search')" placeholder="Rechercher par nom ou prénom" />
+                                <x-button icon="c-arrow-path" class="btn-circle btn-ghost ml-3" link="{{ route('employes.index') }}"/>
+                            </form>
+                        </div>
+                        
                     <div class="mb-4">
-                        <label for="status-filter" class="block text-sm font-medium text-gray-700">Filtrer par statut</label>
-                        <select id="status-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <label for="status-filter" class="block text-md font-semibold text-base-content">Filtrer par statut</label>
+                        <select id="status-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-primary bg-secondary border-info focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
                             <option value="">Tous les employés</option>
                             <option value="actif">Employés actifs</option>
                             <option value="absent">Employés absents/en congés</option>
@@ -49,52 +48,44 @@
                         </select>
                     </div>
 
-                    @if ($employes->isEmpty())
-                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        {{ __('Aucun employé trouvé.') }}
-                    </div>
-                    @else
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table id="rounded" class="min-w-full divide-y divide-info-content">
+                        <thead class="bg-base-300">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom & Prénom</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Département</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-primary text-sm font-bold uppercase tracking-wider">Nom & Prénom</th>
+                                <th class="px-6 py-3 text-left text-primary text-sm font-bold uppercase tracking-wider">Département</th>
+                                <th class="px-6 py-3 text-center text-primary text-sm font-bold uppercase tracking-wider">Statut</th>
+                                <th class="px-6 py-3 text-center text-primary text-sm font-bold uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="absences-table" class="bg-white divide-y divide-gray-200">
+                        <tbody id="absences-table" class="bg-secondary divide-y divide-info">
                             @foreach($employes as $employe)
                             <tr data-status="{{ $employe->statut }}">
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $employe->nom }} {{ $employe->prénom }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $employe->email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $employe->departement->nom }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
                                     @if ($employe->statut == 'actif')
-                                    <span class="font-semibold text-green-800">
-                                        Actif
-                                    </span>
-                                @elseif ($employe->statut == 'absent')
-                                    <span class="font-semibold text-orange-800">
-                                        Absent
-                                    </span>
-                                @else
-                                    <span class="font-semibold text-gray-800">
-                                        Inactif
-                                    </span>
-                                @endif
+                                        <span class="font-semibold text-success">
+                                            <x-mary-button icon="o-link" label="Actif" class="btn-ghost text-lg pointer-events-none" responsive/>
+                                        </span>
+                                    @elseif ($employe->statut == 'absent')
+                                        <span class="font-semibold text-warning">
+                                            <x-mary-button icon="o-link-slash" label="Absent" class="btn-ghost text-lg pointer-events-none" responsive/>
+                                        </span>
+                                    @else
+                                        <span class="font-semibold text-error">
+                                            <x-mary-button icon="m-x-mark" label="Inactif" class="btn-ghost text-lg pointer-events-none" responsive/>
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="text-center px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="{{ route('employes.show', $employe) }}" class="text-lg font-semibold text-indigo-600 hover:text-indigo-900 mr-2">Voir</a>
+                                <td class="text-center px-6 py-4 whitespace-nowrap text-lg font-medium">
+                                    <x-button label="Voir" icon="o-eye" class="text-lg btn-ghost font-bold mr-2" link="{{ route('employes.show', $employe) }}" responsive/>
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    @endif
 
-                    <div id="no-absences-message" class="mt-4 text-center text-gray-500 hidden">
+                    <div id="no-absences-message" class="mt-4 text-center text-base-content hidden">
                         Aucun employé trouvé.
                     </div>
 
@@ -102,9 +93,8 @@
                         {{ $employes->links() }}
                     </div>
                 </div>
-            </div>
+            </x-card>
         </div>
-    </div>
 </x-app-layout>
 
 <script>

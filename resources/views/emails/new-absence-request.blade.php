@@ -9,4 +9,4 @@
     <li>Motif : {{ $demandeAbsence->motif }}</li>
 </ul>
 
-<p>Vous pouvez consulter et approuver cette demande dans l'application.</p>
+<p>Vous pouvez consulter et approuver cette demande sur la plateforme.</p>

@@ -124,19 +124,24 @@ class CongeController extends Controller
                 'title' => $conge->employe->nom . ' ' . $conge->employe->prénom,
                 'start' => $conge->date_debut->format('Y-m-d'),
                 'end' => $conge->date_fin->addDay()->format('Y-m-d'), 
-                'color' => $this->getColorFromEmployeName($conge->employe->nom),
+                'color' => $this->getColorFromEmployeName($conge->employe->nom, $conge->employe->id),
             ];
         }
 
         return response()->json($events);
     }
 
-    private function getColorFromEmployeName($employeName)
+    private function getColorFromEmployeName($employeName, $employeId)
     {
-        $hash = md5($employeName);
-        $r = hexdec(substr($hash, 0, 2));
-        $g = hexdec(substr($hash, 2, 2));
-        $b = hexdec(substr($hash, 4, 2));
-        return 'rgb(' . $r . ',' . $g . ',' . $b . ')';
+        $seed = crc32($employeName . $employeId);
+        $r = (($seed >> 16) & 0xFF) / 255;
+        $g = (($seed >> 8) & 0xFF) / 255;
+        $b = (($seed) & 0xFF) / 255;
+
+        $r = $r * 0.8 + 0.2;
+        $g = $g * 0.8 + 0.2;
+        $b = $b * 0.8 + 0.2;
+        
+        return 'rgb(' . round($r * 255) . ',' . round($g * 255) . ',' . round($b * 255) . ')';
     }
 }

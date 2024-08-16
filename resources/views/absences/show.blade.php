@@ -1,88 +1,118 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __( 'Demande d\'absence' ) }}
-            </h2>
-            <a href="{{ route('absences.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                Retour
-            </a>
-        </div>
-    </x-slot>
+    <x-mary-header title="Demande d'absence" class="font-serif font-semibold text-3xl max-w-7xl mx-auto mb-auto py-6 px-4 sm:px-6 lg:px-8 leading-tight text-primary" separator>
+        <x-slot:actions>
+            <x-button label="Retour" icon="o-arrow-left" class="btn-outline btn-primary font-semibold" link="{{ route('absences.index') }}" />
+        </x-slot:actions>
+    </x-mary-header>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    {{ session('error') }}
-                </div>
-            @endif
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-
-
-                    <h3 class="text-2xl font-semibold mb-4">{{ $absence->employe->prénom }} {{ $absence->employe->nom }}</h3>
-                    <div class="grid grid-cols-1 gap-4">
-                        <p class="text-xl"><strong>Date de début :</strong> {{ $absence->date_debut->format('d/m/Y') }}</p>
-                        <p class="text-xl"><strong>Date de fin :</strong> {{ $absence->date_fin->format('d/m/Y') }}</p>
-                        <p class="text-xl"><strong>Motif :</strong> {{ $absence->motif }}</p>
-                        <p class="text-xl"><strong>Statut :</strong>
-                            @if($absence->statut == 'en_attente')
-                                <span class="px-1 text-xl leading-5 font-semibold text-yellow-800">
-                                    En attente
-                                </span>
-                            @elseif($absence->statut == 'approuvee')
-                                <span class="px-1 text-xl leading-5 font-semibold text-green-800">
-                                    Approuvée
-                                </span>
-                            @else
-                                <span class="px-1 text-xl leading-5 font-semibold text-red-800">
-                                    Refusée
-                                </span>
-                            @endif
-                        </p>
-                    </div>
-
-                    @can('approuver absences')
-                    <div class="mt-4 flex justify-end">
-                        <form action="{{ route('absences.approve', $absence) }}" method="POST" class="inline-block">
-                            @csrf
-                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
-                                Approuver
-                            </button>
-                        </form>
-                        <form action="{{ route('absences.reject', $absence) }}" method="POST" class="inline-block">
-                            @csrf
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2">
-                                Refuser
-                            </button>
-                        </form>
-                    </div>
-                    @endcan
-
-                    @can('créer absence')
-                    <div class="mt-4 flex justify-end">
-                        <a href="{{ route('absences.edit', $absence) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">
-                            Modifier
-                        </a>
-                        <form action="{{ route('absences.destroy', $absence) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet employé ?')">
-                                Supprimer
-                            </button>
-                        </form>
-                    </div>
-                    @endcan
-
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-40">
+        @if(session('success'))
+            <div class="flex justify-center">
+                <div class="w-2/3 mb-4 ">
+                    <x-alert icon="o-check-circle" class="alert-success" dismissible>
+                        {{ session('success') }}
+                    </x-alert>
                 </div>
             </div>
+        @endif
+        
+        @if(session('error'))
+            <div class="flex justify-center">
+                <div>
+                    <x-alert icon="o-x-circle" class="alert-error" dismissible>
+                        {{ session('error') }}
+                    </x-alert>
+                </div>
+            </div>
+        @endif
+
+        <x-card class="p-6 shadow-lg">
+            <div class="w-full text-center">
+                <h2 class="text-3xl font-bold">{{ $absence->employe->prénom }} {{ $absence->employe->nom }}</h2>
+                <h3 class="text-xl font-semibold">{{ $absence->employe->poste }} • 
+                    @if ($absence->employe->statut == 'actif')
+                        <span class="text-xl font-semibold text-success">
+                            Actif
+                        </span>
+                    @elseif ($absence->employe->statut == 'absent')
+                        <span class="text-xl font-semibold text-warning">
+                            Absent
+                        </span>
+                    @else
+                        <span class="text-xl font-semibold text-error">
+                            Inactif
+                        </span>
+                    @endif
+                </h3>
+            </div>
+            <div class="w-full text-center mt-10">
+                    <p class="text-xl mb-6 font-bold">Date de début : <span class="text-xl font-normal">{{ $absence->date_debut->format('d/m/Y') }}</span></p>
+                    <p class="text-xl mb-6 font-bold">Date de fin : <span class="text-xl font-normal">{{ $absence->date_fin->format('d/m/Y') }}</span></p>
+                    <p class="text-xl mb-6 font-bold">Motif : <span class="text-xl font-normal">{{ $absence->motif }}</span></p>
+                    <p class="text-xl mb-6 font-bold">Statut : 
+                        @if ($absence->statut == 'en_attente')
+                        <span class="text-xl font-normal text-warning">
+                            En attente
+                        </span>
+                        @elseif ($absence->statut == 'approuvee')
+                        <span class="text-xl font-normal text-success">
+                            Approuvée
+                        </span>
+                        @elseif ($absence->statut == 'refusee')
+                        <span class="text-xl font-normal text-error">
+                            Refusée
+                        </span>
+                        @endif
+                    </p>
+            </div>
+        </x-card>
+
+        <div id="confirmModal" 
+            class="fixed inset-0 z-50 flex items-center justify-center hidden backdrop-blur-sm">
+            <x-card class="bg-secondary shadow-lg p-6 max-w-md w-full">
+                <h3 class="text-xl font-bold mb-4">Suppression</h3>
+                <p class="mb-6">Voulez-vous vraiment retirer cette demande ?</p>
+                <div class="flex justify-end">
+                    <x-mary-button label="Annuler" class="btn-info mr-2" onclick="closeModal()" />
+                    <form id="deleteForm" action="{{ route('absences.destroy', $absence) }}" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <x-mary-button label="Retirer" class="btn-error" type="submit" />
+                    </form>
+                </div>
+            </x-card>
         </div>
+
+        @can('créer absence')
+            @if($absence->statut == 'en_attente')
+                <div class="flex justify-center mt-8 gap-5">
+                    <x-mary-button label="Modifier" link="{{ route('absences.edit', $absence) }}" class="btn-warning" icon="o-pencil" />
+                    <x-mary-button label="Retirer la demande" class="btn-error" icon="o-x-circle" onclick="openModal()" />
+                </div>
+            @endif
+        @endcan
+
+        @can('approuver absences')
+            <div class="flex justify-center mt-8 gap-5">
+                <form action="{{ route('absences.approve', $absence) }}" method="POST" class="inline-block">
+                    @csrf
+                    <x-mary-button label="Approuver" type="submit" class="btn-success" icon="o-hand-thumb-up" />
+                </form>
+                <form action="{{ route('absences.reject', $absence) }}" method="POST" class="inline-block">
+                    @csrf
+                    <x-mary-button label="Refuser" type="submit" class="btn-error" icon="o-hand-thumb-down" />
+                </form>
+            </div>
+        @endcan
     </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+    
+        function closeModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+    </script>
 </x-app-layout>

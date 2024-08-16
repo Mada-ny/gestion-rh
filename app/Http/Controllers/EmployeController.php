@@ -145,7 +145,7 @@ class EmployeController extends Controller
             'email' => $employe->email,
         ]);
 
-        return back()->with('success', 'Employé mis à jour avec succès.');
+        return redirect()->route('employes.show', $employe)->with('success', 'Employé mis à jour avec succès.');
     }
 
     /**

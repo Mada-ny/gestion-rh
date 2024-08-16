@@ -2,7 +2,7 @@
     @role('drh|directeur')
         <x-mary-header title="Fiche de l'employé" class="font-serif font-semibold text-3xl max-w-7xl mx-auto mb-auto py-6 px-4 sm:px-6 lg:px-8 leading-tight text-primary" separator>
             <x-slot:actions>
-                <x-button label="Liste des employés" icon="o-arrow-left" class="btn-outline btn-primary font-semibold" link="{{ route('employes.index') }}" />
+                <x-button label="Retour" icon="o-arrow-left" class="btn-outline btn-primary font-semibold" link="{{ url()->previous() }}" />
             </x-slot:actions>
         </x-mary-header>
     @endrole
@@ -113,12 +113,11 @@
         @can('gérer employés')
             <div class="flex justify-center mt-8 gap-5">
                 <x-mary-button label="Modifier les informations" link="{{ route('employes.edit', $employe) }}" class="btn-warning" icon="o-pencil" />
-                @if ($employe->statut == 'actif')
+                @if ($employe->statut == 'actif' || $employe->statut == 'absent')
                     <x-mary-button label="Désactiver la fiche" class="btn-error" icon="o-x-circle" onclick="openModal()" />
                 @elseif ($employe->statut == 'inactif')
                     <x-mary-button label="Réactiver la fiche" class="btn-success" icon="o-check-circle" onclick="openModal2()" />    
                 @endif
-
             </div>
         @endcan
     </div>
