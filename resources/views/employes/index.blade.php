@@ -94,6 +94,15 @@
                     </div>
                 </div>
             </x-card>
+
+            @can('gérer employés')
+                <div class="mt-5 w-full flex justify-end">
+                    <form action="{{ route('employes.export') }}" method="POST">
+                        @csrf
+                        <x-button label="Exporter la liste des employés" type="submit" icon="o-cloud-arrow-down" class="bg-info text-info-content hover:text-secondary-content font-serif font-bold" />
+                    </form>
+                </div>
+            @endcan
         </div>
 </x-app-layout>
 

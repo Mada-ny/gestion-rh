@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Exports\EmployesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeController extends Controller
 {
@@ -36,6 +38,11 @@ class EmployeController extends Controller
         $employes = $query->paginate(15);
 
         return view('employes.index', compact('employes'));
+    }
+
+    public function exportEmployes()
+    {
+        return Excel::download(new EmployesExport, "employes_pme.xslx", \Maatwebsite\Excel\Excel::XLSX);
     }
 
     /**

@@ -36,6 +36,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('employes/{employe}/restore', [EmployeController::class, 'restore'])->name('employes.restore');
 
     Route::get('/calendrier', [CongeController::class, 'calendar'])->name('conges.calendar');
+
+    Route::post('/employes/export', [EmployeController::class, 'exportEmployes'])->name('employes.export');
+    Route::post('/absences/export', [AbsenceController::class, 'exportAbsences'])->name('absences.export');
 });
 
 Route::middleware('auth')->group(function () {

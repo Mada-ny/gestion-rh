@@ -9,6 +9,9 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Exports\AbsencesExport;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AbsenceController extends Controller
 {
@@ -30,6 +33,14 @@ class AbsenceController extends Controller
             $absences = DemandeAbsence::with('employe')->latest()->paginate(15);
         }
         return view('absences.index', compact('absences'));
+    }
+
+    public function exportAbsences(Request $request)
+    {
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
+
+        return Excel::download(new AbsencesExport($month, $year), "absences_{$year}_{$month}.xlsx", \Maatwebsite\Excel\Excel::XLSX);
     }
 
     /**
