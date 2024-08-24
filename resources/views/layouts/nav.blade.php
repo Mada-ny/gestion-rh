@@ -27,7 +27,7 @@
             <x-menu-item title="Mot de passe" icon="o-key" link="{{ route('profile.edit') }}" />
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <x-menu-item title="{{ __('Log Out') }}" icon="o-power" link="{{ route('logout') }}" onclick="event.preventDefault();this.closest('form').submit();"/>
+                <x-menu-item title="{{ __('Log Out') }}" icon="o-power" onclick="event.preventDefault();this.closest('form').submit();"/>
             </form>
         </x-dropdown>
     </x-slot:actions>
