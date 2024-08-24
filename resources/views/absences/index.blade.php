@@ -106,24 +106,27 @@
                 </div>
             </div>
         </x-card>
-        <div class="mt-5 w-full flex justify-end">
-            <form action="{{ route('absences.export') }}" method="POST">
-                @csrf
-                <select name="month" class="bg-base-300 border-info focus:bg-secondary focus:outline-none focus:border-primary focus:ring-primary rounded-md">
-                    @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ $i == now()->month ? 'selected' : '' }}>
-                            {{ Str::ucfirst(Carbon\Carbon::create()->month($i)->locale('fr_FR')->monthName) }}
-                        </option>
-                    @endfor
-                </select>
-                <select name="year" class="bg-base-300 border-info focus:bg-secondary focus:outline-none focus:border-primary focus:ring-primary rounded-md">
-                    @for ($i = now()->year; $i >= now()->year - 5; $i--)
-                        <option value="{{ $i }}" {{ $i == now()->year ? 'selected' : '' }}>{{ $i }}</option>
-                    @endfor
-                </select>
-                <x-button type="submit" icon="o-cloud-arrow-down" class="bg-info text-info-content hover:text-secondary-content font-serif font-bold ml-2">Exporter les absences</x-button>
-            </form>
-        </div>
+
+        @role('directeur|drh')
+            <div class="mt-5 w-full flex justify-end">
+                <form action="{{ route('absences.export') }}" method="POST">
+                    @csrf
+                    <select name="month" class="bg-base-300 border-info focus:bg-secondary focus:outline-none focus:border-primary focus:ring-primary rounded-md">
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}" {{ $i == now()->month ? 'selected' : '' }}>
+                                {{ Str::ucfirst(Carbon\Carbon::create()->month($i)->locale('fr_FR')->monthName) }}
+                            </option>
+                        @endfor
+                    </select>
+                    <select name="year" class="bg-base-300 border-info focus:bg-secondary focus:outline-none focus:border-primary focus:ring-primary rounded-md">
+                        @for ($i = now()->year; $i >= now()->year - 5; $i--)
+                            <option value="{{ $i }}" {{ $i == now()->year ? 'selected' : '' }}>{{ $i }}</option>
+                        @endfor
+                    </select>
+                    <x-button type="submit" icon="o-cloud-arrow-down" class="bg-info text-info-content hover:text-secondary-content font-serif font-bold ml-2">Exporter les absences</x-button>
+                </form>
+            </div>
+        @endrole
     </div>
 </x-app-layout>
 
